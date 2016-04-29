@@ -1,5 +1,5 @@
 // PATTERN: NP_NULL_ON_SOME_PATH_EXCEPTION
-// SOURCE: File taken from someplace, where?
+// SOURCE: https://sourceforge.net/p/findbugs/bugs/1443
 
 public class testNP {
 	public testNP getSubClassObject() {
