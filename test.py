@@ -4,6 +4,7 @@ import glob
 
 parser = argparse.ArgumentParser(description='Run some tests.')
 parser.add_argument('dir', type=str, help='a directory of java files to analyze')
+parser.add_argument('-fbopts', type=str, dest='fbopts', help='command line options to pass directly FindBugs', default='')
 args = parser.parse_args()
 
 def env_check():
@@ -31,7 +32,7 @@ def analyze_file(targetJFile):
 		sys.exit(1)
 	
 	print("Finding bugs...")
-	run_command('java -jar ' + fbJarLoc + ' ' + targetCFile)
+	run_command(' '.join(['java -jar',fbJarLoc,args.fbopts,targetCFile]))
 		
 	os.remove(targetCFile);
 	
