@@ -1,7 +1,11 @@
-import sys, os, argparse
+import sys, os, argparse, shutil
 import subprocess as sp
 import glob
 
+# Constants
+DIR_BYTECODE = 'ByteCode'
+
+# Arguments
 parser = argparse.ArgumentParser(description='Run some tests.')
 parser.add_argument('dir', type=str, help='a directory of java files to analyze')
 parser.add_argument('-fbopts', type=str, dest='fbopts', help='command line options to pass directly FindBugs', default='')
@@ -12,38 +16,40 @@ def env_check():
 		print('Set the environment variable FINDBUGS_HOME to the top-level directory of FindBugs')
 		sys.exit(1)
 
-def run_command(command):
-	proc = sp.Popen(command, stdout = sp.PIPE)
-	proc.communicate()[0]
+def run_command(command, absorbOutput = True):
+	if (absorbOutput):
+		proc = sp.Popen(command, stdout = sp.PIPE, stderr = sp.PIPE)
+		out, err = proc.communicate()
+	else:
+		proc = sp.Popen(command)
+		proc.communicate()
 	return proc.returncode
 
-##
-# Compile target java file
-# Run target java file through FindBugs
-# Remove class file
-##
-def analyze_file(targetJFile):
-	targetCFile = targetJFile[:-5]+'.class'
+def compile_file(targetJFile):
+	print('...'+targetJFile)
+	if not os.path.exists(DIR_BYTECODE):
+		os.makedirs(DIR_BYTECODE)
 	
-	print("Analyzing file: "+targetJFile)
+	run_command(' '.join(['javac', '-d '+DIR_BYTECODE, targetJFile]))
+
+def run_findbugs():
+	print('Analyzing...')
 	fbJarLoc = os.path.join(os.environ.get('FINDBUGS_HOME'), 'lib', 'findbugs.jar')
-	print("Compiling...")
-	if run_command('javac ' + targetJFile) != 0:
-		sys.exit(1)
-	
-	print("Finding bugs...")
-	run_command(' '.join(['java -jar',fbJarLoc,args.fbopts,targetCFile]))
-		
-	os.remove(targetCFile);
+	run_command(' '.join(['java -jar',fbJarLoc,'-textui',args.fbopts,DIR_BYTECODE]), False)
 	
 def main():
 	env_check()
 	
+	print('Compiling...')
 	if args.dir[-5:] == '.java':
-		analyze_file(args.dir)
+		compile_file(args.dir)
 	else:
 		for filename in glob.iglob(os.path.join(args.dir,'**/*.java'), recursive = True):
-			analyze_file(filename)
+			compile_file(filename)
+	
+	run_findbugs()
+	
+	shutil.rmtree(DIR_BYTECODE)
 
 if __name__ == '__main__':
 	main()
