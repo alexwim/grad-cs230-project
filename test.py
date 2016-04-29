@@ -3,7 +3,7 @@ import subprocess as sp
 import glob
 
 # Constants
-DIR_BYTECODE = 'ByteCode'
+DIR_BYTECODE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ByteCode')
 
 # Arguments
 parser = argparse.ArgumentParser(description='Run some tests.')
@@ -11,6 +11,7 @@ parser.add_argument('dir', type=str, help='a directory of java files to analyze'
 parser.add_argument('-fbopts', type=str, dest='fbopts', help='command line options to pass directly FindBugs', default='')
 args = parser.parse_args()
 
+# Code
 def env_check():
 	if not 'FINDBUGS_HOME' in os.environ:
 		print('Set the environment variable FINDBUGS_HOME to the top-level directory of FindBugs')
