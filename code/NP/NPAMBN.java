@@ -3,12 +3,12 @@
 
 import javax.annotation.*;
 
-public class testNPAMBN {
+public class NPAMBN {
 	public Boolean foo(@CheckForNull Boolean b) { // b is never checked!
 		return b;
 	}
 	
 	public void bar(Boolean b) {
-		foo(b).toString(); // Derefenced here
+		foo(null).toString(); // Derefenced here
 	}
 }

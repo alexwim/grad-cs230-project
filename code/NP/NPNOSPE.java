@@ -1,9 +1,10 @@
 // PATTERN: NP_NULL_ON_SOME_PATH_EXCEPTION
+// TYPE: False Positive
 // SOURCE: https://sourceforge.net/p/findbugs/bugs/1443
 
-public class testNP {
-	public testNP getSubClassObject() {
-		testNP testNPInstance = null;
+public class NPNOSPE {
+	public NPNOSPE getSubClassObject() {
+		NPNOSPE testNPInstance = null;
 		try {
 			testNPInstance = this.getClass().newInstance();
 		}
