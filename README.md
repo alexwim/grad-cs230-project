@@ -24,6 +24,7 @@ The following will run FindBugs on all java files recursively found underneath c
 py test.py code
 ```
 
+## Reporting
 If we want to get a nicely formatted report.
 ```bash
 py test.py code -fbopts="-html -outputFile report.html"
