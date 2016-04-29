@@ -9,7 +9,7 @@ FindBugs 3.0.1
 ## Environment
 FINDBUGS_HOME = Root directory of FindBugs
 
-## Example Test Run
+## Example Runs
 There are two ways to use the provided test script.
 
 ####Specific java file:####
@@ -22,4 +22,9 @@ py test.py code/Sample/Sample.java
 The following will run FindBugs on all java files recursively found underneath code/
 ```bash
 py test.py code
+```
+
+If we want to get a nicely formatted report.
+```bash
+py test.py code -fbopts="-html -outputFile report.html"
 ```
