@@ -17,7 +17,7 @@ def env_check():
 		print('Set the environment variable FINDBUGS_HOME to the top-level directory of FindBugs')
 		sys.exit(1)
 
-def run_command(command, absorbOutput = True):
+def run_command(command, absorbOutput = False):
 	if (absorbOutput):
 		proc = sp.Popen(command, stdout = sp.PIPE, stderr = sp.PIPE)
 		out, err = proc.communicate()
@@ -31,24 +31,29 @@ def compile_file(targetJFile):
 	if not os.path.exists(DIR_BYTECODE):
 		os.makedirs(DIR_BYTECODE)
 	
-	run_command(' '.join(['javac', '-d '+DIR_BYTECODE, targetJFile]))
+	fbJarLoc = os.path.join(os.environ.get('FINDBUGS_HOME'), 'lib', 'findbugs.jar')
+	if run_command(' '.join(['javac', '-cp '+fbJarLoc, '-d '+DIR_BYTECODE, targetJFile])) > 0:
+		return 0
+	return 1
 
 def run_findbugs():
 	print('Analyzing...')
 	fbJarLoc = os.path.join(os.environ.get('FINDBUGS_HOME'), 'lib', 'findbugs.jar')
-	run_command(' '.join(['java -jar',fbJarLoc,'-textui',args.fbopts,DIR_BYTECODE]), False)
+	run_command(' '.join(['java -jar',fbJarLoc,'-textui',args.fbopts,DIR_BYTECODE]))
 	
 def main():
 	env_check()
 	
 	print('Compiling...')
+	count = 0
 	if args.dir[-5:] == '.java':
-		compile_file(args.dir)
+		count = compile_file(args.dir)
 	else:
 		for filename in glob.iglob(os.path.join(args.dir,'**/*.java'), recursive = True):
-			compile_file(filename)
+			count += compile_file(filename)
 	
-	run_findbugs()
+	if count > 0:
+		run_findbugs()
 	
 	shutil.rmtree(DIR_BYTECODE)
 
