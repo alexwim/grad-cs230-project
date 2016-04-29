@@ -8,7 +8,10 @@ public class NPAMBN {
 		return b;
 	}
 	
-	public void bar(Boolean b) {
-		foo(null).toString(); // Derefenced here
+	public void bar() {
+		Boolean b = foo(null);
+		b.toString(); // Derefenced here
+		
+		foo(null).toString(); // Also dereferenced here
 	}
 }
