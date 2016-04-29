@@ -23,12 +23,15 @@ def run_command(command):
 ##
 def analyze_file(targetJFile):
 	targetCFile = targetJFile[:-5]+'.class'
-		
-	jarLoc = os.path.join(os.environ.get('FINDBUGS_HOME'), 'lib', 'findbugs.jar')
+	
+	print("Analyzing file: "+targetJFile)
+	fbJarLoc = os.path.join(os.environ.get('FINDBUGS_HOME'), 'lib', 'findbugs.jar')
+	print("Compiling...")
 	if run_command('javac ' + targetJFile) != 0:
 		sys.exit(1)
 	
-	run_command('java -jar ' + jarLoc + ' ' + targetCFile)
+	print("Finding bugs...")
+	run_command('java -jar ' + fbJarLoc + ' ' + targetCFile)
 		
 	os.remove(targetCFile);
 	
@@ -38,7 +41,7 @@ def main():
 	if args.dir[-5:] == '.java':
 		analyze_file(args.dir)
 	else:
-		for filename in glob.glob(os.path.join(args.dir,'*.java'), recursive = True):
+		for filename in glob.iglob(os.path.join(args.dir,'**/*.java'), recursive = True):
 			analyze_file(filename)
 
 if __name__ == '__main__':
