@@ -3,7 +3,7 @@
 
 import javax.annotation.*;
 
-public class NPAMBN {
+public class AMBN {
 	public Boolean foo(@CheckForNull Boolean b) { // b is never checked!
 		return b;
 	}
