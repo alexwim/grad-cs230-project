@@ -9,15 +9,11 @@ public class NPV {
 		o.toString();
 	}
 	
-	public void foo(Boolean b) {
-		bar(maybe(b));
+	public void foo() {
+		bar(definitelyNull());
 	}
 	
-	public Object maybe(Boolean b) {
-		if (b) {
-			return new Object();
-		} else {
-			return null;
-		}
+	public Object definitelyNull() {
+		return null;
 	}
 }
